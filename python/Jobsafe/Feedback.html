@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <title>Star Rating and Feedback</title>
+</head>
+<style>
+    .hover-animate {
+      position: relative;
+      display: inline-block;
+      padding-bottom: 5px;
+      color: #333;
+      text-decoration: none;
+      transition: color 0.3s ease-in-out;
+    }
+    
+    .hover-animate::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -28px;
+      height: 3px;
+      width: 0;
+      background-color: #2042e3; /* Adjust the color as needed */
+      transition: width 0.4s ease-in-out, left 0.4s ease-in-out;
+    }
+    
+    .hover-animate:hover {
+      color: #2042e3; /* Adjust the hover text color */
+    }
+    
+    .hover-animate:hover::after {
+      width: 90%; /* The underline grows to the middle */
+      left: 0%;  /* The underline moves to the center */
+    }
+    
+  </style>
+
+<body class="min-h-screen bg-gradient-to-r from-white via-white to-white">
+
+   
+ <!-- Navbar -->
+<nav class="shadow-lg lg:px-8 bg-slate-50 text-sm *:font-semibold *:font-sans">
+    <div class="container flex items-center justify-between px-4 py-6 mx-auto">
+      <!-- Logo -->
+      <a href="index.html" class="navbar-brand">
+        <img class="h-10" src="/Jobsafe/FakeofferImg/logo_page-0001.jpg" alt="Logo" />
+      </a>
+      
+      <!-- Menu for Larger Screens -->
+      <div class="hidden space-x-6 text-[15px] md:flex">
+        <a href="index.html" class="hover-animate">Home</a>
+        <a href="Categerious.html" class="hover-animate">Categories</a>
+        <a href="about-us.html" class="hover-animate">About Us</a>
+        <a href="contact.html" class="hover-animate">Contact</a>
+      </div>
+      
+      <!-- Hamburger Menu for Small Screens -->
+      <button id="menu-btn" class="block text-gray-800 md:hidden focus:outline-none">
+        <i class="text-2xl fas fa-bars"></i>
+      </button>
+    </div>
+  
+    <!-- Dropdown Menu for Small Screens -->
+    <div id="menu" class="hidden bg-gray-100 shadow-lg md:hidden">
+      <a href="index.html" class="block px-4 py-2 text-gray-600 hover-animate">Home</a>
+      <a href="Categerious.html" class="block px-4 py-2 text-gray-600 hover-animate">Categories</a>
+      <a href="about-us.html" class="block px-4 py-2 text-gray-600 hover-animate">About Us</a>
+      <a href="contact.html" class="block px-4 py-2 text-gray-600 hover-animate">Contact</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="grid w-full max-w-5xl grid-cols-1 gap-8 p-8 mx-auto mt-8 rounded-lg shadow-2xl bg-gradient-to-r from-white via-blue-200 to-white lg:grid-cols-2">
+    <!-- Left Section: Feedback Form -->
+    <div>
+      <h2 class="mb-6 text-3xl font-extrabold text-center text-gray-800 lg:text-left">We Value Your Feedback</h2>
+
+      <!-- Star Rating Section -->
+      <div id="star-rating" class="flex justify-center mb-6 space-x-2 text-3xl text-yellow-400 lg:justify-start">
+        <button class="transition-transform duration-200 hover:scale-125" data-value="1">&#9733;</button>
+        <button class="transition-transform duration-200 hover:scale-125" data-value="2">&#9733;</button>
+        <button class="transition-transform duration-200 hover:scale-125" data-value="3">&#9733;</button>
+        <button class="transition-transform duration-200 hover:scale-125" data-value="4">&#9733;</button>
+        <button class="transition-transform duration-200 hover:scale-125" data-value="5">&#9733;</button>
+      </div>
+      <p class="mb-6 text-lg text-center text-gray-600 lg:text-left">Rating: <span id="selected-rating" class="font-bold">0</span> / 5</p>
+
+      <!-- Feedback Form -->
+      <textarea id="feedback-text" class="w-full p-4 mb-6 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none" rows="4" placeholder="Write your feedback..."></textarea>
+
+      <!-- Clear Feedback Button -->
+<!-- <button id="clear-feedback" class="w-full px-6 py-3 mt-4 font-semibold text-white transition-all duration-200 bg-red-500 rounded-lg shadow-lg hover:bg-red-600">
+    Clear All Feedback
+  </button> -->
+  
+      <button id="submit-feedback" class="w-full px-6 py-3 font-semibold text-white transition-all duration-200 rounded-lg shadow-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700">Submit Feedback</button>
+    </div>
+
+    <!-- Right Section: Feedback List -->
+    <div>
+      <h3 class="pb-2 mb-4 text-2xl font-semibold text-center text-gray-800 border-b lg:text-left">Previous Feedback:</h3>
+      <ul id="feedback-container" class="space-y-6 overflow-y-auto max-h-[400px] pr-4">
+        <!-- Feedback items will be added here -->
+      </ul>
+    </div>
+  </div>
+
+  <script>
+        const menuBtn = document.getElementById('menu-btn');
+        const menu = document.getElementById('menu');
+      
+        menuBtn.addEventListener('click', () => {
+          menu.classList.toggle('hidden');
+        });
+    document.addEventListener('DOMContentLoaded', () => {
+      const starRating = document.getElementById('star-rating');
+      const selectedRating = document.getElementById('selected-rating');
+      const feedbackText = document.getElementById('feedback-text');
+      const feedbackContainer = document.getElementById('feedback-container');
+      const submitFeedback = document.getElementById('submit-feedback');
+
+      // Load feedback from localStorage
+      const feedbackData = JSON.parse(localStorage.getItem('feedbackData')) || [];
+
+      // Function to render feedback
+      function renderFeedback() {
+        feedbackContainer.innerHTML = '';
+        feedbackData.forEach(({ rating, feedback }, index) => {
+          const feedbackItem = document.createElement('li');
+          feedbackItem.classList.add('p-4', 'border', 'rounded-lg', 'bg-gray-50', 'shadow-sm');
+          feedbackItem.style.wordBreak = 'break-word';
+          feedbackItem.innerHTML = `
+            <div class="flex items-center mb-2">
+              <div class="mr-2 text-yellow-400">${'&#9733;'.repeat(rating)}${'&#9734;'.repeat(5 - rating)}</div>
+              <span class="text-sm text-gray-500">Rating: ${rating}/5</span>
+            </div>
+            <p class="text-gray-700">${feedback}</p>
+          `;
+          feedbackContainer.appendChild(feedbackItem);
+        });
+      }
+
+      // Initial render
+      renderFeedback();
+
+      // Star rating click event
+      starRating.addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON') {
+          const rating = e.target.getAttribute('data-value');
+          selectedRating.textContent = rating;
+        }
+      });
+
+      // Submit feedback
+      submitFeedback.addEventListener('click', () => {
+        const rating = parseInt(selectedRating.textContent, 10);
+        const feedback = feedbackText.value.trim();
+
+        if (rating === 0 || feedback === '') {
+          alert('Please provide both a rating and feedback.');
+          return;
+        }
+
+        // Save feedback
+        feedbackData.push({ rating, feedback });
+        localStorage.setItem('feedbackData', JSON.stringify(feedbackData));
+
+        // Clear inputs
+        selectedRating.textContent = '0';
+        feedbackText.value = '';
+
+        // Re-render feedback list
+        renderFeedback();
+      });
+    });
+
+    // Clear feedback
+const clearFeedbackButton = document.getElementById('clear-feedback');
+
+/*clearFeedbackButton.addEventListener('click', () => {
+  if (confirm('Are you sure you want to delete all feedback?')) {
+    localStorage.removeItem('feedbackData');
+    feedbackData.length = 0; // Clear the array
+    renderFeedback();
+  }
+});*/
+
+  </script>
+</body>
+</html>
