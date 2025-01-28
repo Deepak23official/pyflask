@@ -145,19 +145,25 @@
     })
         
         function sendMail(){
-        let parms = {
-            from_name: document.getElementById("name").value,
-            name:      document.getElementById("name").value,
-            email_id:  document.getElementById("email").value,
-            Feedback : document.getElementById("subject").value,
-            message:   document.getElementById("message").value
-        }
-        emailjs.send("service_dsxjsr4","template_g9umwnq",parms).then(alert("Email Sent Successfully!.."))
-                document.getElementById("name").value=""
-                document.getElementById("name").value=""
-                document.getElementById("email").value=""
-                document.getElementById("subject").value=""
-                document.getElementById("message").value=""
+          if(document.getElementById("name").value != "null" && document.getElementById("email").value != "null" && document.getElementById("subject").value != "" && document.getElementById("message").value != ""){
+            let parms = {
+              from_name: document.getElementById("name").value,
+              name:      document.getElementById("name").value,
+              email_id:  document.getElementById("email").value,
+              Feedback : document.getElementById("subject").value,
+              message:   document.getElementById("message").value
+          }
+          emailjs.send("service_dsxjsr4","template_g9umwnq",parms).then(alert("Email Sent Successfully!.."))
+            document.getElementById("name").value=""
+              document.getElementById("name").value=""
+              document.getElementById("email").value=""
+              document.getElementById("subject").value=""
+              document.getElementById("message").value=""
+          }
+          else{
+            alert("Fill All Details")
+          }
+       
     }
       const menuBtn = document.getElementById('menu-btn');
       const menu = document.getElementById('menu');
