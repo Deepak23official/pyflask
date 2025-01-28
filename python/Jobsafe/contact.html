@@ -9,6 +9,17 @@
     rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="Desigining/css/LineIcons.2.0.css" />
+
+    <script type="text/javascript"
+    src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+    </script>
+    <script type="text/javascript">
+    (function(){
+    emailjs.init({
+        publicKey: "W-LksVok12cTUwqqg",
+      });
+    })();
+    </script>
 </head>
 <style>
   .hover-animate {
@@ -48,7 +59,7 @@
   <div class="container flex items-center justify-between px-4 py-6 mx-auto">
     <!-- Logo -->
     <a href="index.html" class="navbar-brand">
-      <img class="h-10" src="FakeofferImg/logo_page-0001.jpg" alt="Logo" />
+      <img class="h-10" src="/Jobsafe/FakeofferImg/logo_page-0001.jpg" alt="Logo" />
     </a>
     
     <!-- Menu for Larger Screens -->
@@ -129,9 +140,20 @@
     </div>
     <script>
 
-      function sendMail(){
-        alert("Sended")
-      }
+      document.getElementById('contact-form').addEventListener('submit',(e)=>{
+        e.preventDefault();
+    })
+        
+        function sendMail(){
+        let parms = {
+            from_name: document.getElementById("name").value,
+            name:      document.getElementById("name").value,
+            email_id:  document.getElementById("email").value,
+            Feedback : document.getElementById("subject").value,
+            message:   document.getElementById("message").value
+        }
+        emailjs.send("service_dsxjsr4","template_g9umwnq",parms).then(alert("Email Sent Successfully!.."))
+    }
       const menuBtn = document.getElementById('menu-btn');
       const menu = document.getElementById('menu');
     
